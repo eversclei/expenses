@@ -1,5 +1,5 @@
-import './components/transaction_user.dart';
 import 'package:flutter/material.dart';
+import './home_page.dart';
 
 void main() {
   runApp(ExpensesApp());
@@ -9,35 +9,23 @@ class ExpensesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Despesas Diárias',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber[700],
+        fontFamily: 'Quicksand',
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        ),
       ),
-      home: MyHomePage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Despesas Pessoais'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            child: Card(
-              child: Text('Grafico'),
-              elevation: 5,
-              color: Colors.blue,
-            ),
-          ),
-          TransactionUser(),
-        ],
-      ),
     );
   }
 }
