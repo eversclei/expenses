@@ -1,4 +1,4 @@
-import './models/transaction.dart';
+import './components/transaction_user.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,28 +20,12 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final _transaction = [
-    Transaction(
-      id: 'id',
-      title: 'title',
-      value: 220.22,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 'id2',
-      title: 'title2',
-      value: 440.44,
-      date: DateTime.now().add(Duration(days: 3)),
-    ),
-  ];
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Despesas Pessoais'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
@@ -51,35 +35,7 @@ class MyHomePage extends StatelessWidget {
               color: Colors.blue,
             ),
           ),
-          Column(
-            children: _transaction.map((tr) {
-              return Card(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
-                        ),
-                      ),
-                      child: Text(tr.value.toString()),
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text(tr.title),
-                        Text(tr.date.toString()),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
+          TransactionUser(),
         ],
       ),
     );
