@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import './components/transaction_form.dart';
 import './components/transaction_list.dart';
 import './models/transaction.dart';
+import './components/chart.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,20 +13,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _transactions = [];
+  final List<Transaction> _transactions = [];
 
-  _addTransaction(String titleParam, double valueParam) {
+  List<Transaction> get _recentTransactions {
+    return _transactions.where(
+      (tr) {
+        return tr.date.isAfter(
+          DateTime.now().subtract(
+            Duration(days: 7),
+          ),
+        );
+      },
+    ).toList();
+  }
+
+  _addTransaction(String titleParam, double valueParam, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: titleParam,
       value: valueParam,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
       _transactions.add(newTransaction);
     });
     Navigator.of(context).pop();
+  }
+
+  _deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) {
+        return tr.id == id;
+      });
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -52,14 +73,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              child: Card(
-                child: Text('Grafico'),
-                elevation: 5,
-                color: Colors.blue,
-              ),
-            ),
-            TransactionList(_transactions),
+            Chart(_recentTransactions),
+            TransactionList(_transactions, _deleteTransaction),
           ],
         ),
       ),
