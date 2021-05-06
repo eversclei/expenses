@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Transaction> _transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where(
@@ -28,6 +29,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   _addTransaction(String titleParam, double valueParam, DateTime date) {
+    // for (var j = 0; j < 3; j++) {
+    //   for (var i = 0; i < 7; i++) {
+    //     final newTransaction = Transaction(
+    //       id: Random().nextDouble().toString(),
+    //       title: titleParam + "." + i.toString(),
+    //       value: valueParam * (i + 1),
+    //       date: date.add(Duration(days: (i * -1))),
+    //     );
+
+    //     setState(() {
+    //       _transactions.add(newTransaction);
+    //     });
+    //   }
+    // }
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: titleParam,
@@ -59,22 +74,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Despesas Diárias'),
-        actions: <Widget>[
+    final mediaQuery = MediaQuery.of(context);
+    bool _isLandScape = mediaQuery.orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: Text('Despesas Diárias'),
+      actions: <Widget>[
+        if (_isLandScape)
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openTransactionFormModal(context),
-          )
-        ],
-      ),
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context),
+        ),
+      ],
+    );
+
+    final availableHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions, _deleteTransaction),
+            if (_showChart || !_isLandScape)
+              Container(
+                height: availableHeight * (!_isLandScape ? 0.3 : 0.7),
+                child: Chart(_recentTransactions),
+              ),
+            if (!_showChart || !_isLandScape)
+              Container(
+                height: availableHeight * (!_isLandScape ? 0.7 : 1),
+                child: TransactionList(_transactions, _deleteTransaction),
+              ),
           ],
         ),
       ),
